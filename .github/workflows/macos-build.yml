@@ -1,0 +1,35 @@
+name: macOS JUCE Build (Projucer)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build plugin
+        run: |
+          cd Builds/MacOSX
+          xcodebuild \
+            -project HelloWorldPlugin.xcodeproj \
+            -configuration Release \
+            -target "HelloWorldPlugin - All"
+
+      - name: Collect artifacts
+        run: |
+          mkdir artifacts
+          find Builds/MacOSX -name "*.vst3" -maxdepth 5 -exec cp -R {} artifacts \;
+          find Builds/MacOSX -name "*.component" -maxdepth 5 -exec cp -R {} artifacts \;
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macOS-Plugin
+          path: artifacts
