@@ -37,7 +37,6 @@ jobs:
         run: |
           mkdir -p artifacts
           # Use -R to ensure folders like .vst3 or .component are copied correctly
-          find Builds/MacOSX -name "*.vst3" -exec cp -R {} artifacts \;
           find Builds/MacOSX -name "*.component" -exec cp -R {} artifacts \;
 
       - name: Upload artifacts
